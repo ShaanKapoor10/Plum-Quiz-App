@@ -145,3 +145,9 @@ button:disabled {
 .feedback-box h3 {
   margin-top: 0;
 }
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}

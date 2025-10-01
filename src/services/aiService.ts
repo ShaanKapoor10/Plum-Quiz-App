@@ -1,13 +1,11 @@
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${API_KEY}`;
-
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
 
 export interface Question {
   question: string;
   options: string[];
   correctAnswerIndex: number;
 }
-
 
 export async function generateQuiz(topic: string): Promise<Question[]> {
   const prompt = `
@@ -26,54 +24,64 @@ export async function generateQuiz(topic: string): Promise<Question[]> {
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-goog-api-key': API_KEY 
+      },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
       }),
     });
-
+    
     if (!response.ok) {
-      throw new Error('Failed to fetch quiz from AI.');
+      // Throwing an error with more details from the response
+      const errorBody = await response.text();
+      console.error('API Error Response:', errorBody);
+      throw new Error(`Failed to fetch quiz from AI. Status: ${response.status}`);
     }
-
+    
     const data = await response.json();
     const jsonString = data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
     const quiz = JSON.parse(jsonString);
     return quiz.questions;
 
   } catch (error) {
-    console.error("Error generating quiz:", error);
+    console.error("Error in generateQuiz function:", error);
     throw error; 
   }
 }
 
-
 export async function generateFeedback(topic: string, score: number): Promise<string> {
-    const prompt = `
+  const prompt = `
       You are a supportive and encouraging tutor. Your task is to provide a brief, personalized feedback message to a student based on their quiz score.
       The user scored ${score} out of 5 on a quiz about ${topic}.
       Respond with a 2-3 sentence message that is encouraging and mentions one interesting fact related to the topic. Do not ask any questions.
       Respond ONLY with the text of the message, with no extra formatting.
     `;
   
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
-      });
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-goog-api-key': API_KEY
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    });
   
-      if (!response.ok) {
-        throw new Error('Failed to fetch feedback from AI.');
-      }
-  
-      const data = await response.json();
-      return data.candidates[0].content.parts[0].text.trim();
-  
-    } catch (error) {
-      console.error("Error generating feedback:", error);
-      return "Great effort! Keep learning and exploring."; // Fallback message
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('API Error Response:', errorBody);
+      throw new Error(`Failed to fetch feedback from AI. Status: ${response.status}`);
     }
+  
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text.trim();
+  
+  } catch (error) {
+    console.error("Error in generateFeedback function:", error);
+    return "Great effort! Keep learning and exploring.";
   }
+}

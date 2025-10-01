@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, type ReactNode } from 'react';
 import { type Question, generateQuiz, generateFeedback } from '../services/aiService';
 
-// here we are defining shape of our context State
 interface QuizContextType {
   gameState: 'topic' | 'loading' | 'quiz' | 'results';
   questions: Question[];
@@ -12,6 +11,7 @@ interface QuizContextType {
   selectTopic: (topic: string) => void;
   selectAnswer: (questionIndex: number, answerIndex: number) => void;
   nextQuestion: () => void;
+  previousQuestion: () => void; // NEW: Added previousQuestion function type
   submitQuiz: () => void;
   restartQuiz: () => void;
 }
@@ -38,7 +38,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       setGameState('quiz');
     } catch (error) {
       console.error("Failed to start quiz:", error);
-      setGameState('topic'); // error handle we go back to topic selection on error
+      setGameState('topic'); 
     }
   };
 
@@ -54,6 +54,13 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // NEW: Function to go to the previous question
+  const previousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
   const submitQuiz = async () => {
     let calculatedScore = 0;
     questions.forEach((q, index) => {
@@ -62,7 +69,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       }
     });
     setScore(calculatedScore);
-    setGameState('loading'); // loader will show while fetching feedback
+    setGameState('loading');
     const feedbackMsg = await generateFeedback(topic, calculatedScore);
     setFeedback(feedbackMsg);
     setGameState('results');
@@ -74,9 +81,8 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     setTopic('');
   };
 
-
   return (
-    <QuizContext.Provider value={{ gameState, questions, currentQuestionIndex, userAnswers, score, feedback, selectTopic, selectAnswer, nextQuestion, submitQuiz, restartQuiz }}>
+    <QuizContext.Provider value={{ gameState, questions, currentQuestionIndex, userAnswers, score, feedback, selectTopic, selectAnswer, nextQuestion, previousQuestion, submitQuiz, restartQuiz }}>
       {children}
     </QuizContext.Provider>
   );
