@@ -2,8 +2,7 @@ import React from 'react';
 import { useQuiz } from '../context/QuizContext';
 import ProgressBar from '../components/ProgressBar';
 
-const QuizScreen = () => {
-  // NEW: Destructure the previousQuestion function
+const QuizScreen = () => { 
   const { questions, currentQuestionIndex, userAnswers, selectAnswer, nextQuestion, previousQuestion, submitQuiz } = useQuiz();
   
   const question = questions[currentQuestionIndex];
@@ -23,9 +22,7 @@ const QuizScreen = () => {
             {option}
           </button>
         ))}
-      </div>
-      
-      {/* NEW: Updated navigation section */}
+      </div>  
       <div className="navigation-buttons">
         {currentQuestionIndex > 0 && (
           <button onClick={previousQuestion}>Previous</button>

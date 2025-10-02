@@ -8,10 +8,10 @@ interface QuizContextType {
   userAnswers: (number | null)[];
   score: number;
   feedback: string;
-  selectTopic: (topic: string) => void;
+  startQuiz: (topic: string, modelName: string) => void;
   selectAnswer: (questionIndex: number, answerIndex: number) => void;
   nextQuestion: () => void;
-  previousQuestion: () => void; // NEW: Added previousQuestion function type
+  previousQuestion: () => void;
   submitQuiz: () => void;
   restartQuiz: () => void;
 }
@@ -27,11 +27,11 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState('');
 
-  const selectTopic = async (selectedTopic: string) => {
+  const startQuiz = async (selectedTopic: string, modelName: string) => {
     setGameState('loading');
     setTopic(selectedTopic);
     try {
-      const fetchedQuestions = await generateQuiz(selectedTopic);
+      const fetchedQuestions = await generateQuiz(selectedTopic, modelName);
       setQuestions(fetchedQuestions);
       setUserAnswers(new Array(fetchedQuestions.length).fill(null));
       setCurrentQuestionIndex(0);
@@ -54,7 +54,6 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // NEW: Function to go to the previous question
   const previousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -82,7 +81,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <QuizContext.Provider value={{ gameState, questions, currentQuestionIndex, userAnswers, score, feedback, selectTopic, selectAnswer, nextQuestion, previousQuestion, submitQuiz, restartQuiz }}>
+    <QuizContext.Provider value={{ gameState, questions, currentQuestionIndex, userAnswers, score, feedback, startQuiz, selectAnswer, nextQuestion, previousQuestion, submitQuiz, restartQuiz }}>
       {children}
     </QuizContext.Provider>
   );
