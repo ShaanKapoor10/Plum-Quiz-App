@@ -172,3 +172,73 @@ button:disabled {
   line-height: 1;
 }
 
+/* --- Answer Review Section --- */
+.answer-review-section {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.answer-review-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.answer-review-container {
+  margin-bottom: 1.5rem;
+}
+
+.answer-review-question {
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.answer-review-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.answer-review-option {
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--primary-bg);
+  transition: all 0.2s ease-in-out;
+}
+
+.answer-review-option.correct {
+  background-color: #d1fae5; /* Light Green */
+  border-color: #10b981; /* Green */
+  color: #065f46; /* Dark Green */
+  font-weight: bold;
+}
+
+.answer-review-option.incorrect {
+  background-color: #fee2e2; /* Light Red */
+  border-color: #ef4444; /* Red */
+  color: #991b1b; /* Dark Red */
+  font-weight: bold;
+}
+
+.answer-review-option span {
+  font-style: italic;
+  font-weight: normal;
+  color: var(--text-secondary);
+}
+
+/* Dark Mode Styles for Review Section */
+body.dark .answer-review-option.correct {
+  background-color: #064e3b;
+  border-color: #34d399;
+  color: #d1fae5;
+}
+
+body.dark .answer-review-option.incorrect {
+  background-color: #7f1d1d;
+  border-color: #f87171;
+  color: #fee2e2;
+}
+

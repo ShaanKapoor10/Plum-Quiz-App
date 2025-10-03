@@ -1,9 +1,10 @@
 import React from "react";
 import { useQuiz } from "../context/QuizContext";
 import Card from "../components/GlowCard";
+import AnswerReview from "../components/AnswerReview"; // NEW: Import the component
 
 const ResultScreen = () => {
-  const { score, questions, feedback, restartQuiz } = useQuiz();
+  const { score, questions, userAnswers, feedback, restartQuiz } = useQuiz(); // NEW: Get userAnswers
   const totalQuestions = questions.length;
   const percentage = Math.round((score / totalQuestions) * 100);
 
@@ -28,9 +29,9 @@ const ResultScreen = () => {
             width: "100%",
           }}
         >
-          <h1 style={{ margin: 0 }}>Quiz Results</h1>
+          <h1 style={{ margin: 0, textAlign: "center" }}>Quiz Results</h1>
 
-          <p className="score-text" style={{ fontSize: "1.1rem", fontWeight: 600 }}>
+          <p className="score-text" style={{ fontSize: "1.1rem", fontWeight: 600, textAlign: "center" }}>
             You scored {score} out of {totalQuestions} ({percentage}%)
           </p>
 
@@ -38,6 +39,21 @@ const ResultScreen = () => {
             <h3 style={{ marginTop: 0 }}>AI Feedback:</h3>
             <p style={{ marginBottom: 0 }}>{feedback}</p>
           </div>
+
+          {/* --- NEW: Answer Review Section --- */}
+          <div className="answer-review-section">
+            <h2 className="answer-review-title">Review Your Answers</h2>
+            {questions.map((question, index) => (
+              <AnswerReview 
+                key={index}
+                questionIndex={index}
+                question={question}
+                userAnswerIndex={userAnswers[index]}
+              />
+            ))}
+          </div>
+          {/* --- End of New Section --- */}
+
 
           <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
             <button onClick={restartQuiz} style={{ padding: "10px 16px", borderRadius: 10, cursor: "pointer" }}>
@@ -51,3 +67,4 @@ const ResultScreen = () => {
 };
 
 export default ResultScreen;
+
