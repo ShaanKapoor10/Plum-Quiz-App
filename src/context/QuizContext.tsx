@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { type Question, generateQuiz, generateFeedback } from '../services/aiService';
 
 interface QuizContextType {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
   gameState: 'topic' | 'loading' | 'quiz' | 'results';
   questions: Question[];
   currentQuestionIndex: number;
@@ -19,6 +21,22 @@ interface QuizContextType {
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
 export const QuizProvider = ({ children }: { children: ReactNode }) => {
+  // Theme state management
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return (savedTheme as 'light' | 'dark') || (prefersDark ? 'dark' : 'light');
+  });
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => {
+      const newTheme = prevTheme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('theme', newTheme);
+      return newTheme;
+    });
+  };
+
+ 
   const [gameState, setGameState] = useState<'topic' | 'loading' | 'quiz' | 'results'>('topic');
   const [topic, setTopic] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -81,7 +99,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <QuizContext.Provider value={{ gameState, questions, currentQuestionIndex, userAnswers, score, feedback, startQuiz, selectAnswer, nextQuestion, previousQuestion, submitQuiz, restartQuiz }}>
+    <QuizContext.Provider value={{ theme, toggleTheme, gameState, questions, currentQuestionIndex, userAnswers, score, feedback, startQuiz, selectAnswer, nextQuestion, previousQuestion, submitQuiz, restartQuiz }}>
       {children}
     </QuizContext.Provider>
   );
@@ -94,3 +112,4 @@ export const useQuiz = () => {
   }
   return context;
 };
+

@@ -1,77 +1,43 @@
 :root {
   --primary-bg: #f0f4f8;
   --card-bg: #ffffff;
-  --text-color: #102a43;
-  --primary-color: #49a6e9;
-  --primary-hover: #2d8cce;
-  --correct-color: #2fb17e;
-  --incorrect-color: #e65c5c;
-  --border-radius: 8px;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --text-primary: #102a43;
+  --text-secondary: #5a677d;
+  --button-bg: #49a6e9;
+  --button-hover-bg: #2d8cce;
+  --button-text: #ffffff;
+  --border-color: #e2e8f0;
+  --accent-color: #49a6e9;
+  --feedback-bg: #e6f7ff;
+}
+
+body.dark {
+  --primary-bg: #1a202c;
+  --card-bg: #2d3748;
+  --text-primary: #edf2f7;
+  --text-secondary: #a0aec0;
+  --button-bg: #4299e1;
+  --button-hover-bg: #63b3ed;
+  --button-text: #1a202c;
+  --border-color: #4a5568;
+  --accent-color: #63b3ed;
+  --feedback-bg: #2c5282;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
   background-color: var(--primary-bg);
-  color: var(--text-color);
+  color: var(--text-primary);
+  
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-  text-align: left;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #555;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  box-sizing: border-box; 
-}
-
-.form-group button {
-  margin-top: 0.75rem;
-  width: 100%;
-}
-
-.divider {
-  margin: 2rem 0;
-  font-weight: bold;
-  color: #aaa;
-  position: relative;
-  text-align: center;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 40%;
-  height: 1px;
-  background-color: #ddd;
-}
-
-.divider::before {
-  left: 0;
-}
-
-.divider::after {
-  right: 0;
+  transition: background-color 0.3s, color 0.3s;
 }

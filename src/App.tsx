@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuiz } from './context/QuizContext';
 import TopicScreen from './screens/TopicScreen';
 import QuizScreen from './screens/QuizScreen';
 import ResultScreen from './screens/ResultScreen';
 import Loader from './components/Loader';
+import ThemeToggle from './components/ThemeToggle';
 import './App.css';
 
 function App() {
-  const { gameState } = useQuiz();
+  const { gameState, theme } = useQuiz();
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
 
   const renderGameState = () => {
     switch (gameState) {
@@ -26,8 +30,9 @@ function App() {
 
   return (
     <div className="app-container">
-      <header>
-        <h1>AI Knowledge Quiz 🧠</h1>
+      <header className="app-header">
+        <h1 className="app-title">AI Quiz</h1>
+        <ThemeToggle />
       </header>
       <main>
         {renderGameState()}
@@ -37,3 +42,4 @@ function App() {
 }
 
 export default App;
+
