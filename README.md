@@ -32,10 +32,10 @@
 *A quick look at the quiz creation process and gameplay.*
 
 
-<video controls loop muted playsinline width="800">
-  <source src="./public/PLumQuiz.mp4" type="video/mp4">
-  Your browser does not support the video tag. <a href="./public/PLumQuiz.mp4">Download</a>.
-</video>
+[![Watch Demo](./public/TopicScreenDarkMode.png)](https://www.youtube.com/watch?v=FYBXZ0_V3Dc)
+
+🎬 *Click the image above to watch the full video demo on YouTube!*
+
 
 </div>
 
