@@ -1,6 +1,6 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
 
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY as string; 
+// const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY as string; 
 
 export interface Question {
   question: string;

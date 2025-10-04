@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuiz } from "../context/QuizContext";
 import Card from "../components/GlowCard";
 import ProgressBar from "../components/ProgressBar";

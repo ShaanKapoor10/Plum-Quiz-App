@@ -1,5 +1,5 @@
 import React, { type FC, type ReactNode } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { useQuiz } from "../context/QuizContext"; 
 interface CardProps {
   title?: string;

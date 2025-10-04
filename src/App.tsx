@@ -1,4 +1,4 @@
-import React, { useEffect ,useState} from 'react';
+import  { useEffect ,useState} from 'react';
 import { useQuiz } from './context/QuizContext';
 import TopicScreen from './screens/TopicScreen';
 import QuizScreen from './screens/QuizScreen';

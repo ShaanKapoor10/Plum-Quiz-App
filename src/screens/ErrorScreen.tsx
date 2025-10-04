@@ -10,18 +10,26 @@ const ErrorScreen: React.FC<ErrorScreenProps> = ({ message }) => {
   const { restartQuiz } = useQuiz(); 
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+    <div style={{ display: "flex" ,alignItems : "start" }}>
       <Card
         align="center"
         style={{
           borderRadius: "10px",
           margin: "0 auto",
-          padding: "28px",
+          
           width: "100%",
-          maxWidth: "600px",
-          textAlign: "center",
+          
+          textAlign: "center"
         }}
       >
+        {/* <Card
+        align="start"
+        style={{
+          borderRadius: "10px",
+          margin: "0 auto",
+          padding: "20px",
+        }}
+      ></Card> */}
         <div className="card-inner" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center" }}>
           
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#ff7675' }}>

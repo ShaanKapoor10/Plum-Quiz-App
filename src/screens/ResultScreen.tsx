@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuiz } from "../context/QuizContext";
 import Card from "../components/GlowCard";
 import AnswerReview from "../components/AnswerReview"; // NEW: Import the component
@@ -9,15 +8,16 @@ const ResultScreen = () => {
   const percentage = Math.round((score / totalQuestions) * 100);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+    <div style={{ display: "flex" }}>
       <Card
         align="start"
         style={{
           borderRadius: "10px",
           margin: "0 auto",
           padding: "28px",
-          width: "100%",
-          maxWidth: "780px",
+          paddingLeft : "0px",
+          marginLeft : "0px",
+          width: "100%"
         }}
       >
         <div
