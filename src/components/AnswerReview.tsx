@@ -1,4 +1,3 @@
-import React from 'react';
 import { type Question } from '../services/aiService'; // Assuming Question type is exported from aiService
 
 interface AnswerReviewProps {
@@ -8,7 +7,7 @@ interface AnswerReviewProps {
 }
 
 const AnswerReview = ({ question, userAnswerIndex, questionIndex }: AnswerReviewProps) => {
-  const isCorrect = userAnswerIndex === question.correctAnswerIndex;
+  
 
   return (
     <div className="answer-review-container">
