@@ -4,13 +4,14 @@ import { type Question, generateQuiz, generateFeedback } from '../services/aiSer
 interface QuizContextType {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
-  gameState: 'topic' | 'loading' | 'quiz' | 'results';
+  gameState: 'topic' | 'loading' | 'quiz' | 'results' | 'error';
+  error: string | null;
   questions: Question[];
   currentQuestionIndex: number;
   userAnswers: (number | null)[];
   score: number;
   feedback: string;
-  startQuiz: (topic: string, modelName: string , difficulty : number) => void;
+  startQuiz: (topic: string, modelName: string , difficulty : number, personality : string) => void;
   selectAnswer: (questionIndex: number, answerIndex: number) => void;
   nextQuestion: () => void;
   previousQuestion: () => void;
@@ -37,7 +38,8 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   };
 
  
-  const [gameState, setGameState] = useState<'topic' | 'loading' | 'quiz' | 'results'>('topic');
+  const [gameState, setGameState] = useState<'topic' | 'loading' | 'quiz' | 'results' | 'error'>('topic');
+  const [error, setError] = useState<string | null>(null);
   const [topic, setTopic] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -45,18 +47,25 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState('');
 
-  const startQuiz = async (selectedTopic: string, modelName: string,difficulty : number) => {
+  const startQuiz = async (selectedTopic: string, modelName: string,difficulty : number , personality : string) => {
     setGameState('loading');
+    setError(null); 
     setTopic(selectedTopic);
     try {
-      const fetchedQuestions = await generateQuiz(selectedTopic, modelName,difficulty);
+      const fetchedQuestions = await generateQuiz(selectedTopic, modelName,difficulty,personality);
+      if (!fetchedQuestions || fetchedQuestions.length === 0) {
+        throw new Error("The AI returned an empty or invalid quiz. Please try a different topic.");
+      }
+
       setQuestions(fetchedQuestions);
       setUserAnswers(new Array(fetchedQuestions.length).fill(null));
       setCurrentQuestionIndex(0);
       setGameState('quiz');
-    } catch (error) {
-      console.error("Failed to start quiz:", error);
-      setGameState('topic'); 
+    } catch (err) {
+      
+      console.error("Failed to start quiz:", err);
+      setError(err instanceof Error ? err.message : "An unknown error occurred.");
+      setGameState('error');
     }
   };
 
@@ -96,10 +105,11 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     setGameState('topic');
     setQuestions([]);
     setTopic('');
+    setError(null);
   };
 
   return (
-    <QuizContext.Provider value={{ theme, toggleTheme, gameState, questions, currentQuestionIndex, userAnswers, score, feedback, startQuiz, selectAnswer, nextQuestion, previousQuestion, submitQuiz, restartQuiz }}>
+    <QuizContext.Provider value={{ theme, toggleTheme, gameState,error, questions, currentQuestionIndex, userAnswers, score, feedback, startQuiz, selectAnswer, nextQuestion, previousQuestion, submitQuiz, restartQuiz }}>
       {children}
     </QuizContext.Provider>
   );

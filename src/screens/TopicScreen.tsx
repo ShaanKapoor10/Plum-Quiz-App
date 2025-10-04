@@ -6,6 +6,7 @@ import GenerateButton from "../components/GenerateButton";
 import CustomInput from "../components/CustomInput";
 import ThemedDropdown from "../components/ThemeDropDown";
 import ThemedSlider from "../components/ThemeSlider";
+import PersonalityCard from "../components/PersonalityCard";
 
 const topics = [
   { title: "Space Exploration", tagline: "Think you’re smarter than NASA?" },
@@ -37,12 +38,19 @@ const difficultyLevels = [
   { level: 4, description: "Hard: For dedicated fans. In-depth and niche questions." },
   { level: 5, description: "Hardest: Expert-level trivia that will challenge anyone." },
 ];
+const personalities = [
+  { id: 'The Professional Quizmaster', name: 'The Professional Quizmaster', description: 'Formal, clear, and structured questions like a real quiz show.' },
+  { id: 'The Storyteller', name: 'The Storyteller', description: 'Narrative questions that set a scene or tell a short story.' },
+  { id: 'The Sarcastic Rival', name: 'The Sarcastic Rival', description: 'A challenging persona who will taunt and dare you to get it right.' },
+  { id: 'The Enthusiastic Child', name: 'The Enthusiastic Child', description: 'Playful and simple language, asking questions with a sense of wonder.' },
+];
 
 
 const TopicScreen = () => {
   const [customTopic, setCustomTopic] = useState("");
   const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash");
   const [difficulty, setDifficulty] = useState(3); 
+  const [personality, setPersonality] = useState(personalities[0].id);
   const { startQuiz } = useQuiz();
 
   const handleStartQuiz = (topicToUse: string) => {
@@ -50,7 +58,7 @@ const TopicScreen = () => {
       alert("Please select or enter a topic!");
       return;
     }
-    startQuiz(topicToUse, selectedModel,difficulty);
+    startQuiz(topicToUse, selectedModel,difficulty,personality);
   };
 
  
@@ -88,9 +96,22 @@ const TopicScreen = () => {
               description={difficultyLevels.find(d => d.level === difficulty)?.description}
             />
 
-
-
           <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <label>Choose Quizmaster Personality:</label>
+            <div className="personality-selector-container">
+              {personalities.map((p) => (
+                <PersonalityCard
+                  key={p.id}
+                  name={p.name}
+                  description={p.description}
+                  isSelected={personality === p.id}
+                  onClick={() => setPersonality(p.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "8px"  , alignItems :"center"}}>
             <label htmlFor="model-select">Choose AI Model:</label>
             <ThemedDropdown
                 value={selectedModel}
@@ -106,7 +127,7 @@ const TopicScreen = () => {
 
           </div>
 
-          <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "8px" , alignItems : "center"}}>
             <label htmlFor="custom-topic">Enter a Custom Topic:</label>
             <CustomInput
               id="custom-topic"

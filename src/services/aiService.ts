@@ -9,7 +9,7 @@ export interface Question {
 }
 
 
-const getQuizPrompt = (topic: string, difficulty: number) => {
+const getQuizPrompt = (topic: string, difficulty: number, personality : string) => {
   let difficultyDescription = '';
   switch (difficulty) {
     case 1: difficultyDescription = "Easiest: Questions should be based on fun facts and widely known, surface-level information."; break;
@@ -20,27 +20,65 @@ const getQuizPrompt = (topic: string, difficulty: number) => {
     default: difficultyDescription = "Medium: A standard mix of questions.";
   }
 
+  let personalityInstruction = '';
+  switch (personality) {
+    case 'The Professional Quizmaster':
+      personalityInstruction = "Adopt a formal, clear, and authoritative tone like a televised quiz show host. Often provide a brief introductory sentence or context before asking the question directly.";
+      break;
+    case 'The Storyteller':
+      personalityInstruction = "Adopt a narrative, descriptive, and engaging tone. Weave a short scenario or story into each question to make it more immersive. The question should emerge naturally from the narrative.";
+      break;
+    case 'The Sarcastic Rival':
+      personalityInstruction = "Adopt a taunting, challenging, and slightly mocking tone. Frame questions as a personal challenge to the user, using informal and direct language as if daring them to get it right.";
+      break;
+    case 'The Enthusiastic Child':
+      personalityInstruction = "Adopt a playful, simple, and wondrous tone. Use simple words and lots of excitement. Frame questions from a curious, child-like perspective, even if the topic is complex.";
+      break;
+    default:
+      personalityInstruction = "Use a standard, neutral tone for questioning.";
+  }
+
   return `
-    You are a helpful quiz-generating assistant. Your task is to generate a quiz based on a given topic and difficulty level.
-    Respond ONLY with a valid JSON object. Do not include any introductory text, explanations, or code block formatting like \`\`\`json.
+  You are a robust JSON-generating API. Your primary function is to create educational quizzes.
     
+    The user-provided topic is: "${topic}"
+
+    --- PRE-GENERATION CHECK ---
+    First, evaluate the topic. If the topic is nonsensical (e.g., "asdfghjk"), ambiguous, inappropriate, or too short (less than 3 characters) to generate a meaningful quiz, you MUST respond with the following JSON object and nothing else:
+    {
+      "error": "The topic you provided is invalid or too vague. Please provide a more specific and appropriate topic."
+    }
+    --- END PRE-GENERATION CHECK ---
+
+    If the topic is valid, proceed with generating the quiz according to the specifications below.
+
+    You are a helpful quiz-generating assistant and
+    You are an AI Quizmaster. You MUST adopt the following personality for the entire duration of this quiz generation task.
+    
+    --- PERSONALITY DIRECTIVE ---
+    ${personalityInstruction}
+    --- END DIRECTIVE ---
+
+    Your task is to generate a quiz based on the user's specifications. Your adopted personality should influence the TONE, STYLE, and CONTEXT of the questions you create.
+
     --- QUIZ SPECIFICATIONS ---
     - Topic: "${topic}"
-    - Difficulty Level: ${difficulty} out of 5.
-    - Difficulty Description: ${difficultyDescription}
+    - Difficulty Level: ${difficulty} out of 5 (${difficultyDescription})
     --- END SPECIFICATIONS ---
 
+    Now, generate the quiz. 
+    Respond ONLY with a valid JSON object. Do not include any introductory text, explanations, or code block formatting like \`\`\`json.
+    
     The JSON object must have a single key "questions" which is an array of 5 question objects.
     Each question object must have the following keys:
-    - "question": A string containing the question text.
-    - "options": An array of 4 unique strings representing the multiple-choice options.
-    - "correctAnswerIndex": A number (0, 1, 2, or 3) representing the index of the correct answer in the "options" array.
-  `;
+    - "question": A string containing the question text, phrased according to your assigned personality.
+    - "options": An array of 4 unique strings.
+    - "correctAnswerIndex": A number between 0 and 3.`
 };
 
 
-export async function generateQuiz(topic: string, modelName: string, difficulty: number): Promise<Question[]> {
-  const prompt = getQuizPrompt(topic, difficulty);
+export async function generateQuiz(topic: string, modelName: string, difficulty: number, personality: string): Promise<Question[]> {
+  const prompt = getQuizPrompt(topic, difficulty,personality);
 
   try {
     let response;
@@ -72,9 +110,32 @@ export async function generateQuiz(topic: string, modelName: string, difficulty:
     }
     
     const data = await response.json();
-    const jsonString = data.candidates[0].content.parts[0].text;
-    const quiz = JSON.parse(jsonString.replace(/```json|```/g, '').trim());
-    return quiz.questions;
+
+    let jsonString;
+    if (modelName.startsWith('gemini')) {
+      if (!data.candidates || data.candidates.length === 0) {
+        throw new Error("The AI response was blocked or is empty. This can happen with sensitive topics.");
+      }
+      jsonString = data.candidates[0].content.parts[0].text;
+    } else {
+      jsonString = data.choices[0].message.content;
+    }
+
+    const parsedData = JSON.parse(jsonString.replace(/```json|```/g, '').trim());
+
+   
+    if (parsedData.error) {
+      throw new Error(parsedData.error);
+    }
+    
+    return parsedData.questions;
+
+
+    // const jsonString = data.candidates[0].content.parts[0].text;
+    // const quiz = JSON.parse(jsonString.replace(/```json|```/g, '').trim());
+    // return quiz.questions;
+
+    
 
   } catch (error) {
     console.error("Error in generateQuiz function:", error);

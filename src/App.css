@@ -229,7 +229,6 @@ button:disabled {
   color: var(--text-secondary);
 }
 
-/* Dark Mode Styles for Review Section */
 body.dark .answer-review-option.correct {
   background-color: #064e3b;
   border-color: #34d399;
@@ -240,5 +239,100 @@ body.dark .answer-review-option.incorrect {
   background-color: #7f1d1d;
   border-color: #f87171;
   color: #fee2e2;
+}
+
+.personality-selector-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+
+.personality-card {
+  
+  -webkit-backdrop-filter: blur(12px); 
+  backdrop-filter: blur(12px);
+  
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden; 
+}
+
+
+.personality-card {
+  background-color: rgba(255, 255, 255, 0.6); 
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.personality-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: rgba(104, 63, 234, 0.5); 
+  box-shadow: 0 0 20px rgba(104, 63, 234, 0.2); 
+}
+
+.personality-card.selected {
+  transform: translateY(-5px) scale(1.02);
+  border-color: #C850C0; 
+  box-shadow: 0 0 30px rgba(200, 80, 192, 0.4); 
+}
+
+.icon-svg {
+  width: 48px;
+  height: 48px;
+  stroke: var(--accent-color); 
+  stroke-width: 1.5;
+}
+
+
+
+body.dark .personality-card {
+  background-color: rgba(26, 27, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark .personality-card:hover {
+  border-color: rgba(0, 166, 255, 0.5); 
+  box-shadow: 0 0 20px rgba(0, 166, 255, 0.3); 
+}
+
+body.dark .personality-card.selected {
+  border-color: #A47CF3; 
+  box-shadow: 0 0 30px rgba(233, 0, 255, 0.5); 
+}
+
+body.dark .icon-svg {
+  stroke: #A47CF3; 
+}
+
+
+
+.personality-card-icon {
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+
+.personality-card-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.personality-card-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+
+@media (max-width: 640px) {
+  .personality-selector-container {
+    grid-template-columns: 1fr;
+  }
 }
 

@@ -9,8 +9,10 @@ import './App.css';
 import Pattern from "./components/Pattern";
 import SplashScreen from "./components/SplashScreen";
 import logo from "./assets/logo.png";
+import ErrorScreen from './screens/ErrorScreen';
+
 function App() {
-  const { gameState, theme } = useQuiz();
+  const { gameState, theme ,error } = useQuiz();
   useEffect(() => {
     document.body.className = theme;
   }, [theme]);
@@ -28,6 +30,8 @@ function App() {
         return <QuizScreen />;
       case 'results':
         return <ResultScreen />;
+      case 'error':
+        return <ErrorScreen message={error || "An unknown error occurred."} />;
       default:
         return <TopicScreen />;
     }
