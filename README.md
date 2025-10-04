@@ -27,19 +27,26 @@
 
 ### Live Demo & Preview
 
-**[➡️ Click here for a live demo (placeholder link)]**
-
 <div align="center">
 
 *A quick look at the quiz creation process and gameplay.*
 
-*(Placeholder: Replace this with a high-quality GIF of your application)*
-![App Demo GIF](https://placehold.co/800x450/1a202c/edf2f7?text=App%20Demo%20GIF)
+
+<video controls loop muted playsinline width="800">
+  <source src="./public/PLumQuiz.mp4" type="video/mp4">
+  Your browser does not support the video tag. <a href="./public/PLumQuiz.mp4">Download</a>.
+</video>
 
 </div>
 
 ---
 
+
+### Deployed Site
+
+The app is live at: **https://mindforgeaiquiz.vercel.app/**
+
+---
 
 
 ### About MindForge - An AI based Quiz App
@@ -278,13 +285,20 @@ This sophisticated prompt is the engine that drives the app's unique and customi
 
 ### 📸 Screenshots
 
-*(Please replace these placeholders with your actual screenshots)*
+📸 Screenshots
+A glimpse into the "Quiz Recipe" builder and the core gameplay experience, available in both a sleek dark mode and a clean light mode.
 
-|                                         Topic Screen (Dark Mode)                                        |                                               Quiz Screen                                               |                                          Result Screen with Review                                          |
-| :-----------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: |
-| ![Topic Screen in Dark Mode](https://placehold.co/800x600/1a202c/a0aec0?text=Topic%20Screen%20\(Dark\)) | ![Quiz Screen in Light Mode](https://placehold.co/800x600/f0f4f8/102a43?text=Quiz%20Screen%20\(Light\)) | ![Result Screen with Answer Review](https://placehold.co/800x600/1a202c/a0aec0?text=Results%20%26%20Review) |
+
+
+
+|  | Topic Screen | Quiz Screen | Result Screen |
+| :---: | :---: | :---: | :---: |
+| **Dark** | ![Topic Dark 1](./public/TopicScreenDarkMode.png)<br/>![Topic Dark 2](./public/TopicScreenDarkMode2.png) | ![Quiz Dark](./public/QuizScreen.png) | ![Result Dark](./public/ResultScreen.png) |
+| **Light** | ![Topic Light 1](./public/TopicScreenLightMode.png)<br/>![Topic Light 2](./public/TopicScreenLightMode2.png) | ![Quiz Light](./public/QuizScreenLight.png) | ![Result Light](./public/QuizResultLight2.png)<br/>![Quiz Result Light](./public/ResultScreenLight.png) |
 
 ---
+
+
 
 ### Known Issues & Future Roadmap
 
