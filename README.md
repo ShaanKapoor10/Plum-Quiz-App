@@ -313,3 +313,12 @@ A glimpse into the "Quiz Recipe" builder and the core gameplay experience, avail
   * **API Call Retries:** Implement a simple retry mechanism in `aiService.ts` to make the app more resilient to temporary network failures.
 
 ---
+
+### Contributor
+
+<td align="center">
+      <a href="https://github.com/ShaanKapoor10">
+        <img src="https://github.com/ShaanKapoor10.png" width="100px;" alt="Alex Kim"/><br />
+        <sub><b>Shaan Kapoor</b></sub>
+      </a>
+    </td>
