@@ -1,4 +1,5 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
+
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY as string; 
 
 export interface Question {
@@ -7,24 +8,42 @@ export interface Question {
   correctAnswerIndex: number;
 }
 
-const getQuizPrompt = (topic: string) => `
-  You are a helpful quiz-generating assistant. Your task is to generate a quiz based on a given topic.
-  Respond ONLY with a valid JSON object. Do not include any introductory text, explanations, or code block formatting like \`\`\`json.
-  
-  The JSON object should represent a quiz and have a single key "questions" which is an array of 5 question objects.
-  Each question object must have the following keys:
-  - "question": A string containing the question text.
-  - "options": An array of 4 unique strings representing the multiple-choice options.
-  - "correctAnswerIndex": A number (0, 1, 2, or 3) representing the index of the correct answer in the "options" array.
 
-  Topic: "${topic}"
-`;
+const getQuizPrompt = (topic: string, difficulty: number) => {
+  let difficultyDescription = '';
+  switch (difficulty) {
+    case 1: difficultyDescription = "Easiest: Questions should be based on fun facts and widely known, surface-level information."; break;
+    case 2: difficultyDescription = "Easy: Questions should cover common knowledge that a casual enthusiast of the topic would know."; break;
+    case 3: difficultyDescription = "Medium: Questions should require some specific knowledge and assume the user has a foundational understanding of the topic."; break;
+    case 4: difficultyDescription = "Hard: Questions should be for dedicated fans, covering in-depth details, niche facts, and specific terminology."; break;
+    case 5: difficultyDescription = "Hardest: Questions should be expert-level, obscure, and challenging even for a knowledgeable person."; break;
+    default: difficultyDescription = "Medium: A standard mix of questions.";
+  }
 
-export async function generateQuiz(topic: string, modelName: string): Promise<Question[]> {
+  return `
+    You are a helpful quiz-generating assistant. Your task is to generate a quiz based on a given topic and difficulty level.
+    Respond ONLY with a valid JSON object. Do not include any introductory text, explanations, or code block formatting like \`\`\`json.
+    
+    --- QUIZ SPECIFICATIONS ---
+    - Topic: "${topic}"
+    - Difficulty Level: ${difficulty} out of 5.
+    - Difficulty Description: ${difficultyDescription}
+    --- END SPECIFICATIONS ---
+
+    The JSON object must have a single key "questions" which is an array of 5 question objects.
+    Each question object must have the following keys:
+    - "question": A string containing the question text.
+    - "options": An array of 4 unique strings representing the multiple-choice options.
+    - "correctAnswerIndex": A number (0, 1, 2, or 3) representing the index of the correct answer in the "options" array.
+  `;
+};
+
+
+export async function generateQuiz(topic: string, modelName: string, difficulty: number): Promise<Question[]> {
+  const prompt = getQuizPrompt(topic, difficulty);
+
   try {
     let response;
-    
-    //model selection logic according to client side
 
     if (modelName.startsWith('gemini')) {
       const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
@@ -35,24 +54,12 @@ export async function generateQuiz(topic: string, modelName: string): Promise<Qu
           'x-goog-api-key': GEMINI_API_KEY 
         },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: getQuizPrompt(topic) }] }],
+          contents: [{ parts: [{ text: prompt }] }],
         }),
       });
 
     } else if (modelName.startsWith('gpt')) {
-      const API_URL = 'https://api.openai.com/v1/chat/completions';
-      response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: modelName,
-          messages: [{ role: "user", content: getQuizPrompt(topic) }],
-          response_format: { type: "json_object" },
-        }),
-      });
+      throw new Error('OpenAI models are not currently enabled.');
 
     } else {
       throw new Error(`Unsupported model: ${modelName}`);
@@ -65,15 +72,7 @@ export async function generateQuiz(topic: string, modelName: string): Promise<Qu
     }
     
     const data = await response.json();
-
-    // parsing logic can use differnt for different models
-    let jsonString;
-    if (modelName.startsWith('gemini')) {
-      jsonString = data.candidates[0].content.parts[0].text;
-    } else { // OpenAI
-      jsonString = data.choices[0].message.content;
-    }
-
+    const jsonString = data.candidates[0].content.parts[0].text;
     const quiz = JSON.parse(jsonString.replace(/```json|```/g, '').trim());
     return quiz.questions;
 
@@ -83,8 +82,6 @@ export async function generateQuiz(topic: string, modelName: string): Promise<Qu
   }
 }
 
-
-// for feedback we are using default gemini model
 export async function generateFeedback(topic: string, score: number): Promise<string> {
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
   const prompt = `

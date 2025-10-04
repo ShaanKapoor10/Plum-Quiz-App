@@ -5,6 +5,7 @@ import TopicCard from "../components/TopicCard";
 import GenerateButton from "../components/GenerateButton";
 import CustomInput from "../components/CustomInput";
 import ThemedDropdown from "../components/ThemeDropDown";
+import ThemedSlider from "../components/ThemeSlider";
 
 const topics = [
   { title: "Space Exploration", tagline: "Think you’re smarter than NASA?" },
@@ -29,9 +30,19 @@ const topics = [
   { title: "Literature", tagline: "Bookworm or bluff master?" },
 ];
 
+const difficultyLevels = [
+  { level: 1, description: "Easiest: Fun facts and widely known information." },
+  { level: 2, description: "Easy: Common knowledge for a casual enthusiast." },
+  { level: 3, description: "Medium: Requires some specific knowledge of the topic." },
+  { level: 4, description: "Hard: For dedicated fans. In-depth and niche questions." },
+  { level: 5, description: "Hardest: Expert-level trivia that will challenge anyone." },
+];
+
+
 const TopicScreen = () => {
   const [customTopic, setCustomTopic] = useState("");
   const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash");
+  const [difficulty, setDifficulty] = useState(3); 
   const { startQuiz } = useQuiz();
 
   const handleStartQuiz = (topicToUse: string) => {
@@ -39,7 +50,7 @@ const TopicScreen = () => {
       alert("Please select or enter a topic!");
       return;
     }
-    startQuiz(topicToUse, selectedModel);
+    startQuiz(topicToUse, selectedModel,difficulty);
   };
 
  
@@ -66,6 +77,18 @@ const TopicScreen = () => {
           }}
         >
           <h1 style={{ margin: 0, fontSize: "2rem", fontWeight: "bold" }}>Create Your Quiz</h1>
+
+          <ThemedSlider
+              label="Choose Difficulty Level:"
+              value={difficulty}
+              min={1}
+              max={5}
+              step={1}
+              onChange={(v) => setDifficulty(v)}
+              description={difficultyLevels.find(d => d.level === difficulty)?.description}
+            />
+
+
 
           <div className="form-group" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             <label htmlFor="model-select">Choose AI Model:</label>

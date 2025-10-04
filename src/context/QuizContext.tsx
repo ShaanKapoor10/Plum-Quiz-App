@@ -10,7 +10,7 @@ interface QuizContextType {
   userAnswers: (number | null)[];
   score: number;
   feedback: string;
-  startQuiz: (topic: string, modelName: string) => void;
+  startQuiz: (topic: string, modelName: string , difficulty : number) => void;
   selectAnswer: (questionIndex: number, answerIndex: number) => void;
   nextQuestion: () => void;
   previousQuestion: () => void;
@@ -45,11 +45,11 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState('');
 
-  const startQuiz = async (selectedTopic: string, modelName: string) => {
+  const startQuiz = async (selectedTopic: string, modelName: string,difficulty : number) => {
     setGameState('loading');
     setTopic(selectedTopic);
     try {
-      const fetchedQuestions = await generateQuiz(selectedTopic, modelName);
+      const fetchedQuestions = await generateQuiz(selectedTopic, modelName,difficulty);
       setQuestions(fetchedQuestions);
       setUserAnswers(new Array(fetchedQuestions.length).fill(null));
       setCurrentQuestionIndex(0);
